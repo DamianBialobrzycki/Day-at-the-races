@@ -12,14 +12,14 @@ namespace Lab_1_Day_at_the_races
 {
     public partial class Form1 : Form
     {
-        Guy[] Guys;
-        Greyhound[] GreyhoundArray;
+        Guy[] Guys = new Guy[3];
+        Greyhound[] GreyhoundArray = new Greyhound[4];
         public Random MyRandomizer = new Random();
 
         public Form1()
         {
             InitializeComponent();
-
+            
             // Zainicjowanie zmiennych dla każdego Guy
             Guys[0] = new Guy() { Name = "Joe", Cash = 50, MyRadioButton = joeRadioButton, MyLabel = joeBetLabel };
             Guys[1] = new Guy() { Name = "Bob", Cash = 75, MyRadioButton = bobRadioButton, MyLabel = bobBetLabel };
@@ -50,16 +50,16 @@ namespace Lab_1_Day_at_the_races
             };
             GreyhoundArray[3] = new Greyhound()
             {
-                MyPictureBox = pictureBox4,
-                StartingPosition = pictureBox4.Left,
-                RacetrackLength = racetrackPictureBox.Width - pictureBox4.Width,
+                MyPictureBox = pictureBox5,
+                StartingPosition = pictureBox5.Left,
+                RacetrackLength = racetrackPictureBox.Width - pictureBox5.Width,
                 MyRandom = MyRandomizer
             };
             #endregion
 
             // Wyświetlenie minimalnej wartości zakładu na podstawie parametru minimum dla betAmount
             minimumBetLabel.Text = "Minimalny zakład: " + betAmount.Minimum + " zł";
-            // Ustawienei domyślnie wyświetlanej osoby dla zakładu
+            // Ustawienie domyślnie wyświetlanej osoby dla zakładu
             name.Text = "Joe";
 
             for (int i = 0; i < Guys.Length; i++)
@@ -71,25 +71,28 @@ namespace Lab_1_Day_at_the_races
 
         }
 
+        #region Radio Buttons
         private void joeRadioButton_CheckedChanged(object sender, EventArgs e)
         {
             name.Text = Guys[0].Name;
-
         }
 
         private void bobRadioButton_CheckedChanged(object sender, EventArgs e)
         {
-
+            name.Text = Guys[1].Name;
         }
 
         private void alRadioButton_CheckedChanged(object sender, EventArgs e)
         {
-
+            name.Text = Guys[2].Name;
         }
+
+        #endregion
 
         private void startButton_Click(object sender, EventArgs e)
         {
-
+            groupBox1.Enabled = false;
+            timer1.Start();
         }
 
         private void bet_Click(object sender, EventArgs e)
@@ -109,6 +112,31 @@ namespace Lab_1_Day_at_the_races
                     }
 
                     Guys[i].MyLabel.Text = Guys[i].MyBet.GetDescription();
+                }
+            }
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            for (int i = 0; i < GreyhoundArray.Length; i++)
+            {
+                if(GreyhoundArray[i].Run())
+                {
+                    timer1.Stop();
+                    int winningDog = i + 1;
+                    MessageBox.Show("Chart numer " + winningDog + " wygrał wyścig!");
+
+                    for(int j = 0; j < Guys.Length; j++)
+                    {
+                        Guys[j].Collect(winningDog);
+                        Guys[j].ClearBet();
+                        Guys[j].UpdateLabels();
+                    }
+
+                    for (int k = 0; k < GreyhoundArray.Length; k++)
+                        GreyhoundArray[k].TakeStartingPosition();
+                    groupBox1.Enabled = true;
+                    break;
                 }
             }
         }

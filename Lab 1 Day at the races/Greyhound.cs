@@ -20,11 +20,19 @@ namespace Lab_1_Day_at_the_races
             // Przesuń się do przodu losowo o 1, 2, 3 lub 4 punkty
             // Zaktualizuj położenie PictureBox na formularzu
             // Zwróć true, jeżeli wygrałem wyścig
+            
+            Location += MyRandom.Next(1, 4);
+            MyPictureBox.Left += Location;
+
+            if (MyPictureBox.Right >= RacetrackLength)
+                return true;
+            return false;
         }
 
         public void TakeStartingPosition()
         {
             // Wyzeruj położenie i ustaw na linii startowej
+            MyPictureBox.Left = StartingPosition;
         }
     }
 }
